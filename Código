@@ -1,0 +1,113 @@
+// ==UserScript==
+// @name         Google Trajeto KM - Ryan Script
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  Script de Automação para informar o KM da rota.
+// @author       @ryanzera.dev | @sizondev
+// @license      www.instagram.com/sizondev
+// @require      https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js
+// @match        https://www.google.com.br/maps/*
+// @match        https://www.google.com/maps/*
+// @grant        GM_addStyle
+// @icon         data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%20fill%3D%22%23CB912F%22%20%2F%3E%3Cpath%20%20d%3D%22m36%2C12h4v34l-12%2C6h-4V18l12-6Zm-32%2C0v34l12%2C6h4V18l-12-6h-4Zm44%2C0h-4v34l12%2C6h4V18l-12-6Z%22%20fill%3D%22%23CB912F%22%20%2F%3E%3C%2Fsvg%3E
+// @downloadURL 
+// @updateURL 
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    var modal; // Declaramos uma variável para armazenar o modal
+    var distanciaElemento; // Declaramos uma variável para armazenar a referência ao elemento da distância
+
+    function aguardarElemento(selector, callback) {
+        var intervalo = setInterval(function() {
+            var elemento = document.querySelector(selector);
+            if (elemento) {
+                clearInterval(intervalo);
+                callback(elemento);
+            }
+        }, 0);
+    }
+
+    function criarOuAtualizarModal(distanciaTexto) {
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '15%';
+            modal.style.right = '10px';
+            modal.style.transform = 'translateY(-50%)';
+            modal.style.textAlign = 'center';
+            modal.style.padding = '15px';
+            modal.style.background = 'rgba(47, 47, 47, 0.9)'; // Cor de fundo aprimorada
+            modal.style.color = '#fff';
+            modal.style.borderRadius = '10px';
+            modal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2), 0 0 0.4px 0.4px rgba(255, 255, 255, 0.2)'; // Adiciona uma sombra sutil
+            modal.style.zIndex = '9999';
+            modal.style.opacity = '0'; // Começa invisível para adicionar uma animação de fade
+            modal.style.transition = 'opacity 0.5s ease-in-out'; // Adiciona uma animação de fade
+
+            // Adiciona o texto da distância ao modal
+            distanciaElemento = document.createElement('div');
+            distanciaElemento.id = 'distancia';
+            distanciaElemento.style.marginBottom = '10px';
+            modal.appendChild(distanciaElemento);
+
+            // Adiciona um botão para copiar a distância
+            var botaoCopia = document.createElement('button');
+            botaoCopia.textContent = 'Copiar';
+            botaoCopia.style.background = '#2F2F2F';
+            botaoCopia.style.color = '#FFFFFF';
+            botaoCopia.style.border = 'none';
+            botaoCopia.style.padding = '10px';
+            botaoCopia.style.borderRadius = '5px';
+            botaoCopia.style.cursor = 'pointer';
+            botaoCopia.style.width = '100%';
+            botaoCopia.style.transition = 'background 0.3s, color 0.3s';
+            modal.appendChild(botaoCopia);
+
+            // Adiciona evento de clique para copiar a distância
+            botaoCopia.addEventListener('click', function() {
+                var numeroDistancia = parseFloat(distanciaTexto.replace(',', '.'));
+                var numeroFormatado = numeroDistancia.toString().replace('.', ',');
+                navigator.clipboard.writeText(numeroFormatado).then(function() {
+                    console.log('Número da distância copiado: ' + numeroFormatado);
+                    botaoCopia.textContent = 'KM Copiado';
+                    setTimeout(function() {
+                        botaoCopia.textContent = 'Copiar';
+                    }, 2000);
+                });
+            });
+
+            // Adiciona estilos ao passar o mouse
+            botaoCopia.addEventListener('mouseenter', function() {
+                botaoCopia.style.background = '#656565'; // Cor de fundo mais escura no hover
+            });
+
+            botaoCopia.addEventListener('mouseleave', function() {
+                botaoCopia.style.background = '#2F2F2F'; // Cor de fundo original
+            });
+
+            // Adiciona modal à página
+            document.body.appendChild(modal);
+
+            // Adiciona uma pequena pausa antes de tornar o modal visível
+            setTimeout(function() {
+                modal.style.opacity = '1';
+            }, 100);
+        }
+
+        // Atualiza o texto da distância no modal
+        distanciaElemento.textContent = 'Distância: ' + distanciaTexto;
+    }
+
+    function obterDistanciaGoogleMaps() {
+        aguardarElemento('div.ivN21e.tUEI8e.fontBodyMedium div', function(distanciaElemento) {
+            var distanciaTexto = distanciaElemento.innerText.trim();
+            criarOuAtualizarModal(distanciaTexto);
+        });
+    }
+
+    // Chama obterDistanciaGoogleMaps() a cada 0ms para atualizar continuamente
+    setInterval(obterDistanciaGoogleMaps, 0);
+})();
