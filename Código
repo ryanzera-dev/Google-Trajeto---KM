@@ -10,8 +10,8 @@
 // @match        https://www.google.com/maps/*
 // @grant        GM_addStyle
 // @icon         data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%20fill%3D%22%23CB912F%22%20%2F%3E%3Cpath%20%20d%3D%22m36%2C12h4v34l-12%2C6h-4V18l12-6Zm-32%2C0v34l12%2C6h4V18l-12-6h-4Zm44%2C0h-4v34l12%2C6h4V18l-12-6Z%22%20fill%3D%22%23CB912F%22%20%2F%3E%3C%2Fsvg%3E
-// @downloadURL  https://raw.githubusercontent.com/ryanzera-dev/Google-Trajeto---KM/main/C%C3%B3digo
-// @updateURL    https://raw.githubusercontent.com/ryanzera-dev/Google-Trajeto---KM/main/C%C3%B3digo
+// @downloadURL  https://raw.githubusercontent.com/ryanzera-dev/Google-Trajeto-KM/main/C%C3%B3digo
+// @updateURL    https://raw.githubusercontent.com/ryanzera-dev/Google-Trajeto-KM/main/C%C3%B3digo
 // ==/UserScript==
 
 (function() {
